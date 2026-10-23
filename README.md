@@ -7,8 +7,7 @@
 
 需先刷入 GPT 分区镜像，再装固件：
 
-- 2G 版，适用于 4 GB eMMC：[`NN6000V2_2GUBOOT.bin`](https://raw.githubusercontent.com/wzdddyy/iStoreOS-NN6000/main/partition/NN6000V2_2GUBOOT.bin)
-- 4G 版，适用于 8 GB 及以上 eMMC：[`NN6000V2_4GUBOOT.bin`](https://raw.githubusercontent.com/wzdddyy/iStoreOS-NN6000/main/partition/NN6000V2_4GUBOOT.bin)
+- 适用于 4 GB eMMC 及以上：[`NN6000_UBOOT.bin`](https://raw.githubusercontent.com/wzdddyy/iStoreOS-NN6000/main/partition/NN6000_UBOOT.bin)
 - 剩余空间自动分区（可选）：[`userdata-autosize`](https://raw.githubusercontent.com/wzdddyy/iStoreOS-NN6000/main/partition/userdata-autosize)
 
 > `userdata-autosize` 是文本文件，GitHub 默认打开显示内容，要保存成文件请右键链接选「将链接另存为」，保存类型选「所有文件」。
