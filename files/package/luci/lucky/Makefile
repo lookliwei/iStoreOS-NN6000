@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lucky
 PKG_VERSION:=2.27.2
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
@@ -56,7 +56,7 @@ define Package/lucky
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Lucky network utility
-  DEPENDS:=@(aarch64||arm||i386||mips||mipsel||riscv64||x86_64) @(!TARGET_gemini)
+  DEPENDS:=@(aarch64||arm||i386||mips||mipsel||riscv64||x86_64) @(!TARGET_gemini) +jsonfilter
   URL:=https://github.com/gdy666/lucky
 endef
 
@@ -77,6 +77,7 @@ define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 	gzip -dc $(CURDIR)/lucky_$(PKG_VERSION)_Linux_$(LUCKY_ARCH)_wanji.tar.gz \
 		| $(HOST_TAR) -C $(PKG_BUILD_DIR) -xf -
+	$(Build/Patch)
 endef
 
 define Build/Compile
@@ -87,12 +88,26 @@ define Package/lucky/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/lucky $(1)/usr/bin/lucky
 	$(INSTALL_DIR) $(1)/usr/libexec
 	$(INSTALL_BIN) ./files/lucky-call $(1)/usr/libexec/lucky-call
+	$(INSTALL_BIN) ./files/lucky-watchdog $(1)/usr/libexec/lucky-watchdog
 	$(INSTALL_DIR) $(1)/usr/share/lucky
 	echo '$(LUCKY_ARCH)' > $(1)/usr/share/lucky/arch
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/lucky.init $(1)/etc/init.d/lucky
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/luckyuci $(1)/etc/config/lucky
+endef
+
+define Package/lucky/postinst
+#!/bin/sh
+[ -n "$${IPKG_INSTROOT}" ] || /usr/libexec/lucky-watchdog sync
+endef
+
+define Package/lucky/prerm
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ] && [ "$${PKG_UPGRADE}" != 1 ]; then
+	/etc/init.d/lucky stop
+	/usr/libexec/lucky-watchdog remove
+fi
 endef
 
 $(eval $(call BuildPackage,lucky))

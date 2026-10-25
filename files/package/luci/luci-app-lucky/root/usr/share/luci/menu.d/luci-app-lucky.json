@@ -1,6 +1,6 @@
 {
 	"admin/services/lucky": {
-		"title": "内网穿透",
+		"title": "Lucky",
 		"order": 60,
 		"action": {
 			"type": "view",
